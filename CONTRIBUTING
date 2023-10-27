@@ -1,0 +1,70 @@
+# Contribution Guide for Infr Desktop Client
+
+First of all, thank you for considering contributing to the Infr Client! 🎉 Our project thrives due to contributors like you. This document provides guidelines to ensure that your contribution goes smoothly.
+
+## Table of Contents
+
+-   [Setting up the Development Environment](#setting-up-the-development-environment)
+-   [How to Contribute](#how-to-contribute)
+-   [Commit Message Guidelines](#commit-message-guidelines)
+-   [Pull Request Process](#pull-request-process)
+-   [Get in Touch](#get-in-touch)
+
+## Setting up the Development Environment
+
+Before diving into code, ensure that your local setup matches the prerequisites:
+
+-   Install [NodeJS 14 or above](https://nodejs.org/en/download/)
+
+To set up the Infr Client on your local machine:
+
+```bash
+git clone https://github.com/InfrHQ/client.git
+cd client
+bun install
+npm run tauri dev
+```
+
+## How to Contribute
+
+1.  **Fork the Repository:** Start by forking the [Infr Desktop Client repository](https://github.com/InfrHQ/client).
+
+2.  **Create a Feature Branch:** After cloning your fork locally, create a new branch for your feature or bugfix. This helps in keeping the master branch clean and also enables easy tracking of your contributions.
+```bash
+git checkout -b your-feature-branch-name
+```
+
+3.  **Commit your Changes:** Make your changes, and write a meaningful commit message. We follow certain [commit message guidelines](#commit-message-guidelines).
+
+4.  **Push to your Fork:**
+```bash
+git push origin your-feature-branch-name
+```
+
+5.  **Create a Pull Request:** Head over to the 'Pull requests' tab of the main repository and click on 'New Pull Request'. Select your fork from the dropdown and the branch you wish to merge. Then, create a pull request.
+
+## Commit Message Guidelines
+
+-   Start with a verb in the present tense. Example: "Add", "Fix", "Update", "Remove".
+-   Use a brief summary (50 chars or less) in the first line.
+-   Optionally, follow it with a blank line and a more detailed description.
+-   Reference any relevant issues or pull requests, e.g., "Fixes #123" or "Related to #456".
+
+Example:
+```
+Add search functionality to the dashboard  This commit introduces a search box and filters to allow users to search through their data. Fixes #123.
+```
+
+## Pull Request Process
+
+1.  **Describe Your Changes:** When opening a pull request, provide a clear description of what your changes do, why you made them, and which issues they address.
+2.  **Pass All Tests:** Ensure that your code doesn't introduce any new bugs. Our maintainers will also review your PR and may suggest changes or improvements.
+3.  **Review by Maintainers:** One or more maintainers will review your contribution and provide feedback. Please be patient and address any feedback or questions they might have.
+4.  **Merging:** Once approved, your pull request will be merged into the master branch. Congratulations, and thanks for your contribution! 🎉
+
+## Get in Touch
+
+-   **Discord:** Join our [Discord community](https://discord.gg/ZAejZCzaPe) for any help or discussions.
+-   **Twitter:** Follow [InfrHQ on Twitter](https://twitter.com/InfrHQ) for updates.
+
+Your feedback and contributions are invaluable to the growth of Infr Desktop Client. We look forward to collaborating with you! 🚀

@@ -1,0 +1,72 @@
+{
+    "build": {
+        "beforeDevCommand": "bun run dev",
+        "beforeBuildCommand": "bun run build",
+        "devPath": "http://localhost:1420",
+        "distDir": "../dist",
+        "withGlobalTauri": true
+    },
+    "package": {
+        "productName": "Infr Client OSS",
+        "version": "0.0.5"
+    },
+    "tauri": {
+        "macOSPrivateApi": true,
+        "allowlist": {
+            "all": true,
+            "shell": {
+                "all": false,
+                "open": true
+            }
+        },
+        "systemTray": {
+            "iconPath": "tray/icon_cancel.png",
+            "iconAsTemplate": true
+        },
+        "bundle": {
+            "active": true,
+            "targets": "all",
+            "identifier": "com.infr.desktoposs",
+            "icon": [
+                "icons/32x32.png",
+                "icons/128x128.png",
+                "icons/128x128@2x.png",
+                "icons/icon.icns",
+                "icons/icon.ico"
+            ],
+            "resources": ["tray/*"]
+        },
+        "security": {
+            "csp": null
+        },
+        "windows": [
+            {
+                "label": "main",
+                "fullscreen": false,
+                "resizable": true,
+                "title": "Infr",
+                "width": 1280,
+                "height": 720
+            },
+            {
+                "label": "search",
+                "height": 550,
+                "width": 960,
+                "transparent": true,
+                "center": true,
+                "visible": false,
+                "url": "searchbar.html",
+                "hiddenTitle": true,
+                "decorations": false,
+                "resizable": false,
+                "alwaysOnTop": true
+            }
+        ],
+        "updater": {
+            "active": true,
+            "endpoints": ["https://github.com/infrhq/client/releases/latest/download/latest.json"],
+            "dialog": true,
+            "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU5QzFFNkE0NEMzRThGREEKUldUYWp6NU1wT2JCNlNFTjRVZkdFS2cwbGVUNkgyV2EwNFVIeEtNNHdhWFBlTmY3bWFEOXlwaGsK"
+        }
+    }
+}
