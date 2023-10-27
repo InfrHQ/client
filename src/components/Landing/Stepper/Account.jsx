@@ -68,63 +68,59 @@ function Account({ setStep }) {
     }
 
     async function handleSetupServer() {
+        setLoading(true);
 
-		setLoading(true);
+        try {
+            // Make sure host & API key is set
+            if (host === '' || apiKey === '') {
+                toast.error('Please enter a valid host and API key');
+                return;
+            }
 
+            // Check if host is valid
+            let resp = await fetch(host + '/version');
+            if (!resp.ok) {
+                toast.error('Unable to connect to server');
+                return;
+            }
 
-		try {
+            // Check if api key is valid
+            let apiResp = await verfiyAPIKey(host, apiKey);
+            if (!apiResp) {
+                toast.error('Invalid API key');
+                return;
+            }
 
-			// Make sure host & API key is set
-			if (host === '' || apiKey === '') {
-				toast.error('Please enter a valid host and API key');
-				return;
-			}
-	
-			// Check if host is valid
-			let resp = await fetch(host + '/version');
-			if (!resp.ok) {
-				toast.error('Unable to connect to server');
-				return;
-			}
-	
-			// Check if api key is valid
-			let apiResp = await verfiyAPIKey(host, apiKey);
-			if (!apiResp) {
-				toast.error('Invalid API key');
-				return;
-			}
-	
-			// Get user
-			let user = await getUser(host, apiKey);
-	
-			// Set user
-			console.log(user);
-			localStorage.setItem('user', JSON.stringify(user?.user));
-	
-			// Set server credentials
-			let serverCred = {
-				api_key: user?.user.apikeys[0].key,
-				device_id: user?.user.devices[0].id,
-				server_user_id: user?.user.id,
-				host: host,
-			};
-			localStorage.setItem('server_credentials', JSON.stringify(serverCred));
-			await invoke('set_data', {
-				key: 'server_credentials',
-				value: JSON.stringify(serverCred),
-			});
-			toast.success("Server connected. We're logging you in. You will be redirected to the dashboard.");
-	
-			// Set step
-			await new Promise((resolve) => setTimeout(resolve, 2000));
-			setStep(3);
-		} catch (e) {
-			console.log(e);
-			toast.error('Unable to connect to server');
-		}
-		
-		setLoading(false);
-	
+            // Get user
+            let user = await getUser(host, apiKey);
+
+            // Set user
+            console.log(user);
+            localStorage.setItem('user', JSON.stringify(user?.user));
+
+            // Set server credentials
+            let serverCred = {
+                api_key: user?.user.apikeys[0].key,
+                device_id: user?.user.devices[0].id,
+                server_user_id: user?.user.id,
+                host: host,
+            };
+            localStorage.setItem('server_credentials', JSON.stringify(serverCred));
+            await invoke('set_data', {
+                key: 'server_credentials',
+                value: JSON.stringify(serverCred),
+            });
+            toast.success("Server connected. We're logging you in. You will be redirected to the dashboard.");
+
+            // Set step
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            setStep(3);
+        } catch (e) {
+            console.log(e);
+            toast.error('Unable to connect to server');
+        }
+
+        setLoading(false);
     }
 
     return (

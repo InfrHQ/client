@@ -8,9 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "lint": "eslint 'app/**/*.{js,jsx,ts,tsx}' && prettier --write .",
-    "format:check": "prettier --check 'app/**/*.{js,jsx,ts,tsx,css,md,json,html}'",
-    "format": "prettier --write 'app/**/*.{js,jsx,ts,tsx,css,md,json,html}'",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' && prettier --write .",
+    "format:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx,css,md,json,html}'",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json,html}'",
     "prepare": "husky install"
   },
   "husky": {

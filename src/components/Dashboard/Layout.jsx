@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
-import { PersonIcon, HamburgerMenuIcon, ResumeIcon, CameraIcon, MagicWandIcon, ReloadIcon } from '@radix-ui/react-icons';
+import {
+    PersonIcon,
+    HamburgerMenuIcon,
+    ResumeIcon,
+    CameraIcon,
+    MagicWandIcon,
+    ReloadIcon,
+} from '@radix-ui/react-icons';
 import ThemeToggle from '../ThemeToggle';
-import { useLocation } from 'react-router-dom'
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { invoke } from '@tauri-apps/api';
 import { Link } from 'react-router-dom';
 
@@ -11,9 +18,9 @@ function DashboardLayout({ children }) {
     const [userDropdown, setUserDropdown] = useState(false);
     const [page, setPage] = useState('player');
     const [profile, setProfile] = useState(null);
-    
+
     const location = useLocation();
-    
+
     async function fetchProfile() {
         const user = localStorage.getItem('user');
         setProfile(JSON.parse(user));
@@ -21,19 +28,19 @@ function DashboardLayout({ children }) {
 
     async function startRecording() {
         // Check if already running
-        const status = await invoke("background_is_running");
+        const status = await invoke('background_is_running');
         if (status) {
             return;
         }
-		await invoke("start_background");
-	}
+        await invoke('start_background');
+    }
 
     async function stopRecording() {
-        const status = await invoke("background_is_running");
+        const status = await invoke('background_is_running');
         if (!status) {
             return;
         }
-        await invoke("stop_background");
+        await invoke('stop_background');
     }
 
     async function handleSignOut() {
@@ -47,7 +54,7 @@ function DashboardLayout({ children }) {
         // Fetch profile
         fetchProfile();
         // Set page
-        let page = location.pathname.split('/')[2]
+        let page = location.pathname.split('/')[2];
         // Remove query params
         if (page) {
             page = page.split('?')[0];
@@ -59,7 +66,6 @@ function DashboardLayout({ children }) {
         }
         setPage(page);
     }, []);
-
 
     return (
         <div>
@@ -84,7 +90,10 @@ function DashboardLayout({ children }) {
                             </a>
                         </div>
                         <div className="flex items-center lg:order-2">
-                            <ReloadIcon className='w-4 h-4 mr-2 cursor-pointer dark:text-white' onClick={() => window.location.reload()} />
+                            <ReloadIcon
+                                className="w-4 h-4 mr-2 cursor-pointer dark:text-white"
+                                onClick={() => window.location.reload()}
+                            />
                             <ThemeToggle />
                             <div className="relative">
                                 {/* Settings */}
@@ -149,9 +158,8 @@ function DashboardLayout({ children }) {
                                     <span className="ml-3">Replay</span>
                                 </Link>
                             </li>
-                            
-                            {
-                            /*
+
+                            {/*
                             <li>
                                  <a
                                      href="/dashboard/knit"
@@ -164,10 +172,7 @@ function DashboardLayout({ children }) {
                                      <span className="ml-3">Knits</span>
                                  </a>
                              </li>
-                            */
-                            }
-                             
-                           
+                            */}
                         </ul>
                         <ul className="pt-5 mt-5 space-y-2 border-t border-slate-200 dark:border-slate-700">
                             <li>
@@ -175,10 +180,12 @@ function DashboardLayout({ children }) {
                                     to="/dashboard/recorder"
                                     className={
                                         'flex items-center p-2 text-base font-medium text-slate-900 rounded-lg dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 group' +
-                                        (page === 'recorder' ? ' bg-slate-100 dark:bg-slate-700 pointer-events-none' : '')
+                                        (page === 'recorder'
+                                            ? ' bg-slate-100 dark:bg-slate-700 pointer-events-none'
+                                            : '')
                                     }
                                 >
-                                   <CameraIcon className="w-6 h-6 text-slate-500 transition duration-75 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white" />
+                                    <CameraIcon className="w-6 h-6 text-slate-500 transition duration-75 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white" />
                                     <span className="ml-3">Recorder</span>
                                 </Link>
                             </li>
@@ -187,10 +194,12 @@ function DashboardLayout({ children }) {
                                     to="/dashboard/preference"
                                     className={
                                         'flex items-center p-2 text-base font-medium text-slate-900 rounded-lg dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 group' +
-                                        (page === 'preference' ? ' bg-slate-100 dark:bg-slate-700 pointer-events-none' : '')
+                                        (page === 'preference'
+                                            ? ' bg-slate-100 dark:bg-slate-700 pointer-events-none'
+                                            : '')
                                     }
                                 >
-                                   <MagicWandIcon className="w-6 h-6 text-slate-500 transition duration-75 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white" />
+                                    <MagicWandIcon className="w-6 h-6 text-slate-500 transition duration-75 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white" />
                                     <span className="ml-3">Preferences</span>
                                 </Link>
                             </li>

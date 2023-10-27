@@ -150,12 +150,18 @@ function Permissions({ setStep }) {
                         <a
                             href="https://infrhq.com/privacy"
                             target="_blank"
-                            className="text-blue-600 dark:text-blue-500" rel="noreferrer"
+                            className="text-blue-600 dark:text-blue-500"
+                            rel="noreferrer"
                         >
                             Privacy Policy
                         </a>{' '}
                         and{' '}
-                        <a href="https://infrhq.com/terms" target="_blank" className="text-blue-600 dark:text-blue-500" rel="noreferrer">
+                        <a
+                            href="https://infrhq.com/terms"
+                            target="_blank"
+                            className="text-blue-600 dark:text-blue-500"
+                            rel="noreferrer"
+                        >
                             Terms of Service
                         </a>
                         .

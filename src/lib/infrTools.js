@@ -1,8 +1,7 @@
 async function makeServerCall(path, method, info) {
-
-    let localData = JSON.parse(localStorage.getItem('server_credentials'))
-    let thisServerHost = localData.host
-    let thisApiKey = localData.api_key
+    let localData = JSON.parse(localStorage.getItem('server_credentials'));
+    let thisServerHost = localData.host;
+    let thisApiKey = localData.api_key;
 
     let url = `${thisServerHost}/${path}`;
 

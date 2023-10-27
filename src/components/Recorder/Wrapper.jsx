@@ -1,6 +1,6 @@
 import DashboardLayout from '../Dashboard/Layout';
 import Form from './Form';
-import Settings from "./Settings";
+import Settings from './Settings';
 export default function Recorder() {
     return (
         <DashboardLayout>

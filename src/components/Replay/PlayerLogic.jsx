@@ -122,7 +122,6 @@ function ImagePlayer({ segment, server_host, api_key }) {
         }
     }, [currentIndex]);
 
-
     async function fetchMoreImages() {
         // Initialize arrays to hold newly fetched segments
         let olderImages = [];
