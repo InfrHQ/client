@@ -32,6 +32,9 @@ tokio = "1.33.0"
 window-vibrancy = "0.4.2"
 futures = "0.3.28"
 auto-launch = "0.4.0"
+rusty-tesseract = "1.1.9"
+regex = "1"
+
 
 [target."cfg(target_os = \"macos\")".dependencies]
 core-graphics = {version = "0.22.3"}

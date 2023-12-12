@@ -10,6 +10,15 @@ use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
 use std::collections::HashMap;
 use serde_json::json;
 use std::sync::{Arc, Mutex};
+use image::io::Reader as ImageReader;
+use image::DynamicImage;
+use std::io::Cursor;
+use base64::decode;
+use rusty_tesseract::Image;
+use rusty_tesseract::Args;
+use regex::Regex;
+use serde_json::Value;
+
 
 pub struct BackgroundJob {
     handle: Option<thread::JoinHandle<()>>,
@@ -204,43 +213,6 @@ fn get_browser_details(browser_name: &str) -> Result<String, std::io::Error> {
     tab_url
 }
 
-fn send_to_api(infr_host: String, device_id: String, api_key: String, info: HashMap<String, Option<String>>, screenshot_image: String, star: bool) -> Result<(), reqwest::Error> {
-    let client = Client::new();
-    let url = format!("{}/v1/segment/create?device_id={}&type=screenshot", infr_host, device_id);
-    let unix_timestamp = chrono::Utc::now().timestamp();
-    
-    let mut json_data = json!({
-        "json_metadata": info,
-        "screenshot": screenshot_image,
-        "date_generated": unix_timestamp,
-    });
-
-    if star {
-        // Add key called tags to json_metadata (it doesn't exist yet)
-        // Add value of ["star"] to tags
-        let mut json_metadata = json_data["json_metadata"].clone();
-        json_metadata["tags"] = json!(["star"]);
-        json_data["json_metadata"] = json_metadata;   
-    }
-
-    let mut headers = HeaderMap::new();
-    headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
-    headers.insert("Infr-Api-Key", HeaderValue::from_str(&api_key).unwrap());
-
-    let response = client.post(url)
-        .headers(headers)
-        .json(&json_data)
-        .send()?;
-    if response.status().is_success() {
-        println!("Successfully sent data to API");
-    } else {
-        println!("Failed to send data to API");
-    }
-
-    Ok(())
-}
-
-
 pub fn cron_job(host: String, device_id: String, api_key: String, incognito_keywords: Vec<String>, star: bool) {
     let info = get_app_info();
 
@@ -258,9 +230,63 @@ pub fn cron_job(host: String, device_id: String, api_key: String, incognito_keyw
         return;
     }
 
-    let screenshot_image = screenshot::capture();
-    let _ = send_to_api(host, device_id, api_key, info, screenshot_image, star);
-    println!("Cron run completed.\n")
+    // let screenshot_image = screenshot::capture();
+    // let _ = send_to_api(host, device_id, api_key, info, screenshot_image, star);
+    // println!("Cron run completed.\n")
+
+    // fill your own argument struct if needed
+    // Optional arguments are ignored if set to `None`
+    let mut my_args = Args {
+        //model language (tesseract default = 'eng')
+        //available languages can be found by running 'rusty_tesseract::get_tesseract_langs()'
+        lang: "eng".to_string(),
+
+        //map of config variables
+        //this example shows a whitelist for the normal alphabet. Multiple arguments are allowed.
+        //available arguments can be found by running 'rusty_tesseract::get_tesseract_config_parameters()'
+        config_variables: HashMap::from([(
+                "tessedit_char_whitelist".into(),
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".into(),
+            )]),
+        dpi: Some(150),       // specify DPI for input image
+        psm: Some(6),         // define page segmentation mode 6 (i.e. "Assume a single uniform block of text")
+        oem: Some(3),         // define optical character recognition mode 3 (i.e. "Default, based on what is available")
+    };
+
+    let screenshot_image = screenshot::capture_image();
+
+    let dynamic_image = DynamicImage::ImageRgba8(screenshot_image);
+    let img = Image::from_dynamic_image(&dynamic_image).unwrap();
+
+    let box_data = rusty_tesseract::image_to_data(&img, &my_args).unwrap();
+    println!("adiaholic: Box data obtained.\n");
+
+    let extracted_text = rusty_tesseract::image_to_string(&img, &my_args).unwrap();
+    let cleaned_text = clean_string(&extracted_text);
+    println!("adiaholic {}", cleaned_text);
+
+    println!("adiaholic: Cron run completed.\n");
+}
+
+fn clean_string(text: &str) -> String {
+    // Replace newline characters with space
+    let mut cleaned_text = text.replace("\n", " ");
+
+    // Remove backslashes
+    cleaned_text = cleaned_text.replace("\\", "");
+
+    // Replace hash characters with space
+    cleaned_text = cleaned_text.replace("#", " ");
+
+    // Reduce multiple spaces to a single space
+    let re = Regex::new(r"\s+").unwrap();
+    cleaned_text = re.replace_all(&cleaned_text, " ").to_string();
+
+    // Lowercase the text
+    cleaned_text = cleaned_text.to_lowercase();
+
+    // Trim leading and trailing whitespace
+    cleaned_text.trim().to_string()
 }
 
 fn check_for_incognito(

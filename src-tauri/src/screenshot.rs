@@ -1,7 +1,7 @@
 use screenshots::Screen;
 use std::time::SystemTime;
 use std::io::Cursor;
-use image::ImageOutputFormat;
+use image::{ ImageOutputFormat, ImageBuffer };
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 
@@ -23,4 +23,15 @@ pub fn capture() -> String {
 
     println!("Done: {:?}", start.elapsed().ok());
     base64_images.get(0).unwrap().clone() // return the base64 string of the last screen
+}
+
+pub fn capture_image() -> ImageBuffer<image::Rgba<u8>, Vec<u8>> {
+    let start = SystemTime::now();    
+    // let screens = Screen::all().unwrap();
+    // let last_screen = screens.get(screens.len() - 1); // get the last screen
+    let screens = Screen::all().unwrap();
+    let last_screen = screens.last();
+
+    let image = last_screen.unwrap().capture().unwrap();
+    return image;
 }
