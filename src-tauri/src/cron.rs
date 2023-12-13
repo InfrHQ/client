@@ -18,6 +18,8 @@ use rusty_tesseract::Image;
 use rusty_tesseract::Args;
 use regex::Regex;
 use serde_json::Value;
+use std::any::type_name;
+use std::mem::discriminant;
 
 
 pub struct BackgroundJob {
@@ -259,11 +261,79 @@ pub fn cron_job(host: String, device_id: String, api_key: String, incognito_keyw
     let img = Image::from_dynamic_image(&dynamic_image).unwrap();
 
     let box_data = rusty_tesseract::image_to_data(&img, &my_args).unwrap();
-    println!("adiaholic: Box data obtained.\n");
 
     let extracted_text = rusty_tesseract::image_to_string(&img, &my_args).unwrap();
     let cleaned_text = clean_string(&extracted_text);
-    println!("adiaholic {}", cleaned_text);
+    
+    // Iterate over the HashMap
+    for (key, value) in info.iter() {
+        println!("Key: {}", key);
+
+        // Match on the Option to handle Some and None cases
+        match value {
+            Some(inner_value) => println!("Value: {}", inner_value),
+            None => println!("Value is None"),
+        }
+    }
+
+    // Assuming `json_metadata` is a HashMap<String, serde_json::Value>
+    let mut attributes: HashMap<String, Value> = HashMap::new();
+    let keys = vec![
+        "app_name",
+        "window_name",
+        "current_url",
+        "bundle_id",
+        "app_pid",
+        "tags",
+    ];
+
+    for k in keys {
+        if let Some(value) = info.get(k).cloned() {
+            let value_string = value.clone().unwrap_or_default();
+
+            // Convert to appropriate data type based on the content
+            let converted_value: serde_json::Value = if let Ok(number) = value_string.parse::<i64>() {
+                serde_json::Value::Number(serde_json::Number::from(number))
+            } else if let Ok(float) = value_string.parse::<f64>() {
+                serde_json::Value::Number(serde_json::Number::from_f64(float).unwrap())
+            } else {
+                serde_json::Value::String(value_string)
+            };
+
+            attributes.insert(k.to_string(), converted_value);
+        }
+    }
+
+    attributes.insert(
+        "bounding_box_available".to_string(),
+        Value::Bool(!box_data.data.is_empty()),
+    );
+
+    attributes.insert(
+        "page_html_available".to_string(),
+        Value::Bool(false),
+    );
+
+    // Print the resulting attributes HashMap
+    println!("{:?}", attributes);
+
+    let window_name_val: String = match attributes.get("window_name") {
+        Some(value) => value.as_str().unwrap_or("").to_string(),
+        None => String::new(),
+    };
+    let app_name_val: String = match attributes.get("app_name") {
+        Some(value) => value.as_str().unwrap_or("").to_string(),
+        None => String::new(),
+    };
+
+    let conversion_text = format!(
+        "{} {} {}",
+        extracted_text,
+        window_name_val,
+        app_name_val
+    );
+
+    println!("adiaholic: conversion_text: {}", conversion_text);
 
     println!("adiaholic: Cron run completed.\n");
 }
