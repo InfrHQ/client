@@ -27,11 +27,19 @@ You can find it on the [releases page](https://github.com/infrhq/client/releases
 ```bash
 git clone https://github.com/InfrHQ/client.git
 ```
-2. Install dependencies
+2. Install bun
+```bash
+npm install -g bun
+```
+3. Setup rustup 1.67.0 or above
+```bash
+rustup default 1.67.0
+```
+4. Install dependencies
 ```bash
 bun install
 ```
-3. Run the app
+5. Run the app
 ```bash
 bun run tauri dev
 ```
