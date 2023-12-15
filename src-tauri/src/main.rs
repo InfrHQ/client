@@ -30,6 +30,9 @@ pub mod permission;
 // Preferences
 pub mod preference;
 
+// pub mod db_connection;
+pub mod db_diesel;
+
 fn main() {
     
     // Main
