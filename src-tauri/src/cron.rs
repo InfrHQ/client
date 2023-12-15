@@ -21,6 +21,8 @@ use serde_json::Value;
 use std::any::type_name;
 use std::mem::discriminant;
 
+// use crate::db_connection;
+use crate::db_diesel;
 
 pub struct BackgroundJob {
     handle: Option<thread::JoinHandle<()>>,
@@ -315,7 +317,7 @@ pub fn cron_job(host: String, device_id: String, api_key: String, incognito_keyw
     );
 
     // Print the resulting attributes HashMap
-    println!("{:?}", attributes);
+    // println!("{:?}", attributes);
 
     let window_name_val: String = match attributes.get("window_name") {
         Some(value) => value.as_str().unwrap_or("").to_string(),
@@ -333,7 +335,11 @@ pub fn cron_job(host: String, device_id: String, api_key: String, incognito_keyw
         app_name_val
     );
 
-    println!("adiaholic: conversion_text: {}", conversion_text);
+    // println!("adiaholic: conversion_text: {}", conversion_text);
+
+    // db_connection::test(attributes);
+    // db_connection::main();
+    db_diesel::main();
 
     println!("adiaholic: Cron run completed.\n");
 }
