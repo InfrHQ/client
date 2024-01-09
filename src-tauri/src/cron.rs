@@ -1,7 +1,7 @@
 use std::thread;
 use std::time::Duration;
 use std::sync::mpsc::{self, Sender};
-use crate::mac_commands;
+use crate::{mac_commands, db_connection};
 use crate::screenshot;
 use crate::store;
 use crate::utils;
@@ -10,6 +10,7 @@ use reqwest::header::{HeaderMap, HeaderValue, CONTENT_TYPE};
 use std::collections::HashMap;
 use serde_json::json;
 use std::sync::{Arc, Mutex};
+use crate::mac_ocr;
 
 pub struct BackgroundJob {
     handle: Option<thread::JoinHandle<()>>,
@@ -259,9 +260,34 @@ pub fn cron_job(host: String, device_id: String, api_key: String, incognito_keyw
     }
 
     let screenshot_image = screenshot::capture();
-    let _ = send_to_api(host, device_id, api_key, info, screenshot_image, star);
+
+    let extracted_string = mac_ocr::execute_ocr();
+
+    // println!("Extracted string: {}", extracted_string);
+
+    let conversion_text = extracted_string.clone();
+
+    // get_vector(conversion_text);
+
+    db_connection::insert_into_segment(host, device_id, api_key, info, screenshot_image, star, conversion_text);
     println!("Cron run completed.\n")
 }
+
+
+/* This code works perfectly for Bert */
+// fn get_vector(data: String) {    
+//     // Set-up sentence embeddings model
+//     let model = SentenceEmbeddingsBuilder::remote(SentenceEmbeddingsModelType::AllMiniLmL12V2)
+//         .create_model()?;
+
+//     // Define input
+//     let sentences = ["this is an example sentence", "each sentence is converted"];
+
+//     // Generate Embeddings
+//     let embeddings = model.encode(&sentences)?;
+//     println!("{embeddings:?}");
+// }
+
 
 fn check_for_incognito(
     window_name: Option<String>,

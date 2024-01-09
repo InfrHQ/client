@@ -15,6 +15,7 @@ pub mod mac_commands;
 pub mod screenshot;
 pub mod store;
 pub mod utils;
+pub mod mac_ocr;
 
 // Background runner
 use crate::cron::BackgroundJob;
@@ -29,6 +30,10 @@ pub mod permission;
 
 // Preferences
 pub mod preference;
+
+// Postgres
+// pub mod db_diesel;
+pub mod db_connection;
 
 fn main() {
     
